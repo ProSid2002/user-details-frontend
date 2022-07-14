@@ -19,7 +19,6 @@ import Popup from "../../components/Popup";
 import { useForm } from "../../components/useForm";
 import Controls from "../../components/controls/Controls";
 import Notification from "../../components/Notification";
-import ConfirmDialog from "../../components/ConfirmDialog";
 import mailTemplate from "../../components/mailTemplate";
 
 const styles = {
@@ -60,11 +59,7 @@ const Users = () => {
   const [recordForEdit, setRecordForEdit] = useState(null);
   const [selected, setSelected] = useState([]);
   const selectedTrue = selected.filter((item) => item.checked === true);
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [deleteRecord, setDeleteRecord] = useState([]);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -100,7 +95,6 @@ const Users = () => {
   };
 
   const handleDelete = async (_id) => {
-    setConfirmDialog({ ...confirmDialog, isOpen: false });
     const response = await userService.deleteUser(_id);
     if (response.name === "AxiosError") {
       setNotify({
@@ -109,6 +103,7 @@ const Users = () => {
         type: "error",
       });
     } else {
+      setDeleteRecord(response);
       setNotify({
         isOpen: true,
         message: "User Deleted Successfully",
@@ -148,7 +143,7 @@ const Users = () => {
       }
     }
     fetchAllUsers();
-  }, [values, recordForEdit, confirmDialog]);
+  }, [values, recordForEdit, deleteRecord]);
 
   return (
     <>
@@ -211,18 +206,9 @@ const Users = () => {
                         <Edit />
                       </Controls.ActionButton>
                       <Controls.ActionButton
-                        onClick={() =>
-                          setConfirmDialog({
-                            isOpen: true,
-                            title:
-                              "Are you sure you want to delete this record?",
-                            subTitle:
-                              "This operation will delete the record permanently",
-                            onConfirm: () => {
-                              handleDelete(item._id);
-                            },
-                          })
-                        }
+                        onClick={() => {
+                          handleDelete(item._id);
+                        }}
                       >
                         <Delete style={{ color: "#fc5353" }} />
                       </Controls.ActionButton>
@@ -263,10 +249,6 @@ const Users = () => {
         />
       </Popup>
       <Notification notify={notify} setNotify={setNotify} />
-      <ConfirmDialog
-        confirmDialog={confirmDialog}
-        setConfirmDialog={setConfirmDialog}
-      />
     </>
   );
 };

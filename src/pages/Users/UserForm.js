@@ -3,6 +3,7 @@ import { Form } from "../../components/useForm";
 import Controls from "../../components/controls/Controls";
 import React, { useEffect } from "react";
 import isEmail from "validator/lib/isEmail";
+import isMobilePhone from "validator/lib/isMobilePhone";
 import * as userService from "../../services/userService";
 
 const UserForm = (props) => {
@@ -67,8 +68,9 @@ const UserForm = (props) => {
     temp.email = isEmail(values.email)
       ? ""
       : "Please enter email in format abc@xyz.com";
-    temp.phone =
-      values.phone.length === 10 ? "" : "Please enter 10 digit mobile number";
+    temp.phone = /^\d{10}$/.test(values.phone)
+      ? ""
+      : "Please enter 10 digit mobile number";
     temp.hobbies = /^(([a-zA-Z0-9 ](,)?)*)+$/.test(values.hobbies)
       ? ""
       : "Please enter ' , ' seperated list of hobbies";
