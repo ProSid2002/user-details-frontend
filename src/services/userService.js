@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "https://user-details-restapi.herokuapp.com/";
+axios.defaults.baseURL = "https://user-details-restapi.onrender.com";
 
 export async function getAllUsers() {
   try {
